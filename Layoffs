@@ -1,0 +1,96 @@
+# Country and Company Count
+SELECT COUNT(DISTINCT(company)) AS Company_num, COUNT(DISTINCT(country)) AS Country_num
+FROM layoffs;
+
+-- from the above, we can see there are a total of 861 different companies from 33 countries in our dataset
+
+
+# Countries with most companies in the study
+SELECT country, COUNT(country) AS countries_company_count
+FROM layoffs
+GROUP BY country
+ORDER BY countries_company_count DESC
+LIMIT 5;
+
+--- From the above, the United States has the most companies in the dataset, with
+--- 653 companies, and India coming a distant 2nd with 63. Canada, Brazil and 
+--- Germany make up the top 5.
+
+
+# Companies with the least companies in the study
+SELECT country, COUNT(country) AS country_count
+FROM layoffs
+GROUP BY country
+ORDER BY country_count ASC
+LIMIT 10;
+
+--- There are a lot of countries with just 1 company in the dataset
+
+
+# Examining the industries in the dataset
+SELECT industry, COUNT(industry) AS industry_count
+FROM layoffs
+GROUP BY industry
+ORDER BY industry_count DESC
+LIMIT 5;
+
+--- According to our data, the most affected industry by the covid-era tech layoffs was Finance.
+--- Retail was the second most affected, with Healthcare, Marketing and Transportation making the top 5.
+
+
+SELECT industry, COUNT(industry) AS industry_count
+FROM layoffs
+GROUP BY industry
+ORDER BY industry_count ASC
+LIMIT 5;
+
+--- Also, we can see the Hardware and Manufacturing industries were the least affected by these layoffs.
+--- The Aerospace, Energy and Legal industries were the other countries in the top 5.
+
+
+# companies with most amount of laid off staffs
+SELECT company, SUM(total_laid_off) AS laid_off_staffs
+FROM layoffs
+GROUP BY company
+ORDER BY laid_off_staffs DESC
+LIMIT 5;
+
+---- Unsurprisingly, the top 5 countries with the most lay offs are all from the United States
+--- Google (12,000) leads the way with the most layoffs, while Meta follows closely.
+---- Amazon, Microsoft and Salesforce are the others in the top 5 with a significant chunk of layoffs.
+--- Interestingly, these significant layoffs occurred between Novemeber 2022 and January 2023.
+
+
+# Companies with most lay offs count 
+SELECT company, COUNT(company) AS layoffs_count
+FROM layoffs
+GROUP BY company
+ORDER BY layoffs_count DESC;
+
+--- Examining the data further, we see Swiggy, Blend and Uber are the companies that have carried out 
+--- the most frequent layoffs, doing 4 different layoffs within these period. 
+
+
+# Check for average of laid off staffs in The United States
+SELECT country, AVG(total_laid_off) AS avg_layoff
+FROM layoffs
+WHERE country = 'United States';
+
+--- 293,6110 is the average amount of staffs laid off in the US
+
+
+# Check for companies that laid off the most staffs in 2022
+---- Creating Temporary view for data from 2022
+CREATE VIEW twenty22_data AS
+SELECT * 
+FROM layoffs
+WHERE date BETWEEN '2022-01-01'
+	AND '2022-12-31';
+SELECT company, SUM(total_laid_off) AS laid_off_staffs
+FROM twenty22_data
+GROUP BY company
+ORDER BY laid_off_staffs DESC
+LIMIT 5;
+
+--- from the above data, Meta laid off the most staffs. Laying off a record-high 11,000 staffs.
+--- Amazon came a close second. Cisco, Peloton and Carvana made up the top 5.
